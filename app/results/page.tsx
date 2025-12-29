@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import Button from "@/components/Button";
@@ -43,7 +43,6 @@ interface SavedItinerary extends ItineraryData {
 
 export default function ResultsPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [itineraryData, setItineraryData] = useState<ItineraryData | null>(
     null
   );
