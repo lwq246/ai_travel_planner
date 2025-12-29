@@ -1,17 +1,19 @@
-import { NextResponse } from "next/server";
 import connectDB from "@/config/database";
 import Itinerary from "@/models/Itinerary";
 import User from "@/models/User";
+import { NextRequest, NextResponse } from "next/server";
 
 // DELETE - Delete an itinerary
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
+
   try {
     await connectDB();
 
-    const { searchParams } = new URL(req.url);
+    const { searchParams } = new URL(request.url);
     const email = searchParams.get("email");
 
     if (!email) {
@@ -27,9 +29,9 @@ export async function DELETE(
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Find and delete itinerary (only if it belongs to the user)
+    // Find itinerary that belongs to the user
     const itinerary = await Itinerary.findOne({
-      _id: params.id,
+      _id: id,
       userId: user._id,
     });
 
@@ -40,7 +42,7 @@ export async function DELETE(
       );
     }
 
-    await Itinerary.deleteOne({ _id: params.id });
+    await Itinerary.deleteOne({ _id: id });
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
@@ -51,4 +53,3 @@ export async function DELETE(
     );
   }
 }
-
