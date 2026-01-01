@@ -1,4 +1,5 @@
 🌍 AI Travel Planner
+
 ![alt text](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ![alt text](https://img.shields.io/badge/Next.js-14-black)
