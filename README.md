@@ -8,6 +8,7 @@
 ![alt text](https://img.shields.io/badge/Deployed%20on-Vercel-black)
 
 ![alt text](https://img.shields.io/badge/AI-Google%20Gemma%203%201B-blueviolet)
+
 An intelligent travel itinerary generator powered by Google's Gemma 3 1B model. This application creates personalized travel plans based on your destination, duration, and budget, allowing you to save and manage your trips effortlessly.[1]
 View Live Demo · Report Bug · Request Feature
 
