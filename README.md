@@ -49,5 +49,5 @@ Follow these steps to run the project locally.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/ai-travel-planner.git
+   git clone https://github.com/lwq246/ai-travel-planner.git
    cd ai-travel-planner
