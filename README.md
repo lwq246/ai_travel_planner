@@ -2,7 +2,7 @@
 
 ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
-![Gemma 3](https://img.shields.io/badge/AI-Gemma_3_1B-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Gemini 2.5 Flash Lite](https://img.shields.io/badge/AI-Gemini_2.5_Flash_Lite-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
 An intelligent travel itinerary generator powered by **Gemini-2.5-flash-lite** model. This full-stack application allows users to generate, customize, and save personalized travel plans based on destination, duration, and budget.
