@@ -41,7 +41,7 @@ Return valid JSON in this exact format:
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemma-3-1b",
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
