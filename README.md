@@ -5,7 +5,7 @@
 ![Gemma 3](https://img.shields.io/badge/AI-Gemma_3_1B-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
-An intelligent travel itinerary generator powered by **Google's Gemma 3 1B** model. This full-stack application allows users to generate, customize, and save personalized travel plans based on destination, duration, and budget.
+An intelligent travel itinerary generator powered by **Gemini-2.5-flash-lite** model. This full-stack application allows users to generate, customize, and save personalized travel plans based on destination, duration, and budget.
 
 [**View Live Demo**](https://your-project-url.vercel.app) · [**Report Bug**](https://github.com/yourusername/repo/issues)
 
@@ -18,7 +18,7 @@ An intelligent travel itinerary generator powered by **Google's Gemma 3 1B** mod
 
 ## ✨ Features
 
-- **🤖 AI-Powered Itineraries**: Generates detailed day-by-day plans using the lightweight but powerful **Gemma 3 1B** model.
+- **🤖 AI-Powered Itineraries**: Generates detailed day-by-day plans using the lightweight but powerful **Gemini-2.5-flash-lite** model.
 - **🔐 User Authentication**: Secure login and signup functionality to manage user sessions.
 - **🎛️ Custom Parameters**:
   - **Destination**: Input any city or country.
@@ -32,7 +32,7 @@ An intelligent travel itinerary generator powered by **Google's Gemma 3 1B** mod
 - **Frontend**: Next.js, React, Tailwind CSS
 - **Backend**: Next.js API Routes (Serverless)
 - **Database**: MongoDB (via Mongoose)
-- **AI Model**: Google Gemma 3 1B
+- **AI Model**: Gemini-2.5-flash-lite
 - **Deployment**: Vercel
 
 ## 🚀 Getting Started
