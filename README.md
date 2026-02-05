@@ -7,14 +7,15 @@
 
 An intelligent travel itinerary generator powered by **Gemini-2.5-flash-lite** model. This full-stack application allows users to generate, customize, and save personalized travel plans based on destination, duration, and budget.
 
-[**View Live Demo**](https://your-project-url.vercel.app) · [**Report Bug**](https://github.com/yourusername/repo/issues)
+[**View Live Demo**](https://ai-travel-planner-eta.vercel.app/)
 
 ---
 
 ## 📸 Screenshots
 
 <!-- Add a screenshot of your app here. If you don't have one, you can remove this section -->
-![App Interface](https://via.placeholder.com/800x450?text=AI+Travel+Planner+Screenshot)
+
+![App Interface](screenshots/ai-planner.png)
 
 ## ✨ Features
 
@@ -51,3 +52,4 @@ Follow these steps to run the project locally.
    ```bash
    git clone https://github.com/lwq246/ai-travel-planner.git
    cd ai-travel-planner
+   ```
