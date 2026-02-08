@@ -16,19 +16,53 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = window.localStorage.getItem("aitp_user");
-    if (stored) {
+    // Check authentication via API (JWT token in HttpOnly cookie)
+    const checkAuth = async () => {
+      setLoading(true);
       try {
-        setUser(JSON.parse(stored));
-      } catch {
+        const response = await fetch("/api/auth/me", {
+          method: "GET",
+          credentials: "include", // Important: include cookies
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser({
+            name: data.user.name || "",
+            email: data.user.email,
+          });
+          // Also store in localStorage for backward compatibility
+          if (typeof window !== "undefined") {
+            localStorage.setItem(
+              "aitp_user",
+              JSON.stringify({
+                name: data.user.name || "",
+                email: data.user.email,
+              })
+            );
+          }
+        } else {
+          setUser(null);
+          // Clear localStorage if not authenticated
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("aitp_user");
+          }
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error);
         setUser(null);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("aitp_user");
+        }
+      } finally {
+        setLoading(false);
       }
-    } else {
-      setUser(null);
-    }
+    };
+
+    checkAuth();
   }, [pathname]);
 
   useEffect(() => {
@@ -45,13 +79,24 @@ export default function Navbar() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
-  const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("aitp_user");
+  const handleLogout = async () => {
+    try {
+      // Call logout API to clear HttpOnly cookie
+      await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include", // Important: include cookies
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      // Clear localStorage
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("aitp_user");
+      }
+      setUser(null);
+      setOpen(false);
+      router.push("/auth/login");
     }
-    setUser(null);
-    setOpen(false);
-    router.push("/auth/login");
   };
 
   const profileInitial =
@@ -72,7 +117,9 @@ export default function Navbar() {
 
         {/* Navigation / Profile */}
         <div className="flex items-center space-x-4">
-          {user ? (
+          {loading ? (
+            <div className="h-9 w-9 animate-pulse rounded-full bg-gray-200"></div>
+          ) : user ? (
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setOpen((v) => !v)}

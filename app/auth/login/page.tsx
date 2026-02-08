@@ -38,6 +38,7 @@ export default function LoginPage() {
       }
 
       if (typeof window !== "undefined") {
+        // Store user data (token is stored in HttpOnly cookie automatically)
         localStorage.setItem(
           "aitp_user",
           JSON.stringify({ name: data.user?.name, email: data.user?.email })

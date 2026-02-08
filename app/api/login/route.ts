@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
 import connectDB from "@/config/database";
+import { generateToken } from "@/libs/jwt";
 import User from "@/models/User";
 
 export async function POST(req: NextRequest) {
@@ -44,16 +45,36 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json(
-        {
-          message: "Login successful.",
-          user: {
-            name: user.name,
-            email: user.email,
-          },
+    // Generate JWT token
+    const token = generateToken({
+      userId: user._id.toString(),
+      email: user.email,
+      name: user.name,
+    });
+
+    // Create response with user data
+    const response = NextResponse.json(
+      {
+        message: "Login successful.",
+        user: {
+          name: user.name,
+          email: user.email,
         },
-        { status: 200 }
-      );
+      },
+      { status: 200 }
+    );
+
+    // Set HttpOnly cookie with JWT token
+    const isProduction = process.env.NODE_ENV === "production";
+    response.cookies.set("aitp_token", token, {
+      httpOnly: true,
+      secure: isProduction, // Only send over HTTPS in production
+      sameSite: "lax", // CSRF protection
+      maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("[LOGIN_POST]", error);
     return NextResponse.json(
