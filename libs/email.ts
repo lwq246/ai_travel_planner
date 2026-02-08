@@ -10,8 +10,8 @@ export function generateResetToken(): string {
 
 export async function sendPasswordResetEmail(email: string, resetToken: string) {
   // 1. Setup Base URL
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-  // const baseUrl = 'http://localhost:3000';
+  // const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const baseUrl = 'http://localhost:3000';
   const resetUrl = `${baseUrl}/auth/reset-password?token=${resetToken}`;
 
   // 2. Create the Transporter
