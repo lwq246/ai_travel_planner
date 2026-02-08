@@ -19,51 +19,58 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication via API (JWT token in HttpOnly cookie)
     const checkAuth = async () => {
       setLoading(true);
       try {
         const response = await fetch("/api/auth/me", {
           method: "GET",
-          credentials: "include", // Important: include cookies
+          credentials: "include",
         });
+
+        // 1. Explicitly check for 401 (Unauthorized) first
+        // This is a valid state (guest user), not an application error.
+        if (response.status === 401 || response.status === 403) {
+          setUser(null);
+          if (typeof window !== "undefined")
+            localStorage.removeItem("aitp_user");
+          return; // Exit early safely
+        }
 
         if (response.ok) {
           const data = await response.json();
-          setUser({
-            name: data.user.name || "",
-            email: data.user.email,
-          });
-          // Also store in localStorage for backward compatibility
-          if (typeof window !== "undefined") {
-            localStorage.setItem(
-              "aitp_user",
-              JSON.stringify({
-                name: data.user.name || "",
-                email: data.user.email,
-              })
-            );
+
+          // 2. Use Optional Chaining (?.) to prevent crashing if data.user is missing
+          if (data?.user) {
+            const userData = {
+              name: data.user.name || "",
+              email: data.user.email,
+            };
+
+            setUser(userData);
+
+            if (typeof window !== "undefined") {
+              localStorage.setItem("aitp_user", JSON.stringify(userData));
+            }
           }
         } else {
+          // Handle other non-success codes (e.g., 500 Server Error)
+          // We treat them as "not logged in" but don't throw
           setUser(null);
-          // Clear localStorage if not authenticated
-          if (typeof window !== "undefined") {
+          if (typeof window !== "undefined")
             localStorage.removeItem("aitp_user");
-          }
         }
       } catch (error) {
-        console.error("Auth check failed:", error);
+        // 3. Network errors (offline) land here.
+        // We removed the console.error to keep it silent as requested.
         setUser(null);
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("aitp_user");
-        }
+        if (typeof window !== "undefined") localStorage.removeItem("aitp_user");
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {

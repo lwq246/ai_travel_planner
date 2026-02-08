@@ -1,19 +1,16 @@
+// /app/api/auth/me/route.ts
+import { getAuthenticatedUser } from "@/libs/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-import { getAuthenticatedUser } from "@/libs/jwt";
-
-/**
- * GET /api/auth/me
- * Returns the current authenticated user based on JWT token in cookies
- */
 export async function GET(req: NextRequest) {
   try {
     const user = getAuthenticatedUser(req);
 
     if (!user) {
+      // CHANGE: Return 200 status, but with user as null
       return NextResponse.json(
-        { error: "Not authenticated" },
-        { status: 401 }
+        { user: null }, 
+        { status: 200 }
       );
     }
 

@@ -28,6 +28,8 @@ const publicRoutes = [
   "/",
   "/auth/login",
   "/auth/register",
+  "/auth/forgot-password",
+  "/auth/reset-password",
 ];
 
 // Public API routes
@@ -35,6 +37,8 @@ const publicApiRoutes = [
   "/api/login",
   "/api/register",
   "/api/logout",
+  "/api/forgot-password",
+  "/api/reset-password",
 ];
 
 /**
