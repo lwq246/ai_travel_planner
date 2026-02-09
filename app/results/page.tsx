@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Button from "@/components/Button";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import dynamic from "next/dynamic";
 
 interface Activity {
   name: string;
@@ -44,7 +45,7 @@ interface SavedItinerary extends ItineraryData {
 export default function ResultsPage() {
   const router = useRouter();
   const [itineraryData, setItineraryData] = useState<ItineraryData | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
@@ -55,7 +56,7 @@ export default function ResultsPage() {
     string | null
   >(null);
   const [regeneratingCity, setRegeneratingCity] = useState<number | null>(null);
-
+  const [activeDay, setActiveDay] = useState(0);
   useEffect(() => {
     // Try to get itinerary from localStorage first
     const stored = localStorage.getItem("last_itinerary");
@@ -121,7 +122,7 @@ export default function ResultsPage() {
 
     setRegenerating(true);
     setError("");
-
+    // Import Map with SSR disabled
     try {
       const response = await fetch("/api/generate-itinerary", {
         method: "POST",
@@ -223,7 +224,7 @@ export default function ResultsPage() {
 
       // Show success message
       alert(
-        "Itinerary saved successfully! You can view it in Saved Itineraries."
+        "Itinerary saved successfully! You can view it in Saved Itineraries.",
       );
     } catch (err: any) {
       setError(err.message || "Failed to save itinerary. Please try again.");
@@ -234,7 +235,7 @@ export default function ResultsPage() {
     dayIndex: number,
     activityIndex: number,
     field: keyof Activity,
-    value: string | number
+    value: string | number,
   ) => {
     if (!editedData) return;
 
@@ -245,7 +246,7 @@ export default function ResultsPage() {
 
   const handleGenerateNewActivity = async (
     dayIndex: number,
-    activityIndex: number
+    activityIndex: number,
   ) => {
     const data = isEditing && editedData ? editedData : itineraryData;
     if (!data) return;
@@ -354,7 +355,7 @@ export default function ResultsPage() {
 
             if (!activityResponse.ok) {
               throw new Error(
-                newActivity.error || "Failed to generate activity"
+                newActivity.error || "Failed to generate activity",
               );
             }
 
@@ -369,7 +370,7 @@ export default function ResultsPage() {
               lng: 0,
             };
           }
-        })
+        }),
       );
 
       // Update the city and all activities
@@ -391,6 +392,14 @@ export default function ResultsPage() {
       setRegeneratingCity(null);
     }
   };
+  const Map = dynamic(() => import("@/components/Map"), {
+    ssr: false,
+    loading: () => (
+      <div className="h-[400px] w-full bg-gray-100 animate-pulse rounded-2xl flex items-center justify-center">
+        Loading Map...
+      </div>
+    ),
+  });
 
   if (loading) {
     return (
@@ -665,6 +674,32 @@ export default function ResultsPage() {
             </div>
           )}
 
+          {/* Interactive Map Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Route Map</h3>
+              <div className="flex gap-2">
+                {(isEditing && editedData ? editedData : itineraryData).days.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveDay(i)}
+                    className={`px-3 py-1 text-xs rounded-full transition ${activeDay === i ? "bg-blue-600 text-white" : "bg-white text-gray-600 border"}`}
+                  >
+                    Day {i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Map
+              activities={(isEditing && editedData ? editedData : itineraryData).days[activeDay].activities}
+              center={[
+                (isEditing && editedData ? editedData : itineraryData).days[activeDay].activities[0]?.lat ?? 0,
+                (isEditing && editedData ? editedData : itineraryData).days[activeDay].activities[0]?.lng ?? 0,
+              ]}
+            />
+          </div>
+
           {/* Itinerary Days */}
           <div className="space-y-6">
             {(isEditing && editedData ? editedData : itineraryData).days.map(
@@ -689,7 +724,7 @@ export default function ResultsPage() {
                             onChange={(e) => {
                               if (!editedData) return;
                               const updated = JSON.parse(
-                                JSON.stringify(editedData)
+                                JSON.stringify(editedData),
                               );
                               updated.days[dayIndex].city = e.target.value;
                               setEditedData(updated);
@@ -751,7 +786,7 @@ export default function ResultsPage() {
                                         dayIndex,
                                         idx,
                                         "name",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -769,7 +804,7 @@ export default function ResultsPage() {
                                         dayIndex,
                                         idx,
                                         "time",
-                                        e.target.value
+                                        e.target.value,
                                       )
                                     }
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -788,7 +823,7 @@ export default function ResultsPage() {
                                       dayIndex,
                                       idx,
                                       "description",
-                                      e.target.value
+                                      e.target.value,
                                     )
                                   }
                                   rows={3}
@@ -809,7 +844,7 @@ export default function ResultsPage() {
                                         dayIndex,
                                         idx,
                                         "lat",
-                                        parseFloat(e.target.value) || 0
+                                        parseFloat(e.target.value) || 0,
                                       )
                                     }
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -828,7 +863,7 @@ export default function ResultsPage() {
                                         dayIndex,
                                         idx,
                                         "lng",
-                                        parseFloat(e.target.value) || 0
+                                        parseFloat(e.target.value) || 0,
                                       )
                                     }
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -847,7 +882,7 @@ export default function ResultsPage() {
                                         dayIndex,
                                         idx,
                                         "estimatedCost",
-                                        parseFloat(e.target.value) || 0
+                                        parseFloat(e.target.value) || 0,
                                       )
                                     }
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -865,7 +900,7 @@ export default function ResultsPage() {
                                         dayIndex,
                                         idx,
                                         "travelTimeMinutes",
-                                        parseInt(e.target.value) || 0
+                                        parseInt(e.target.value) || 0,
                                       )
                                     }
                                     className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
@@ -1006,7 +1041,7 @@ export default function ResultsPage() {
                     ))}
                   </div>
                 </div>
-              )
+              ),
             )}
           </div>
 

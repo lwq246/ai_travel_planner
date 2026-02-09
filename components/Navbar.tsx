@@ -113,7 +113,7 @@ export default function Navbar() {
 
   return (
     <nav className="w-full border-b border-gray-200 bg-white/80 backdrop-blur-sm relative z-40">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex  items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <div className="text-2xl font-bold text-blue-600">✈️</div>

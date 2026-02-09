@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/Button";
 import Footer from "@/components/Footer";
@@ -37,7 +36,9 @@ interface SavedItinerary {
 
 export default function SavedPage() {
   const router = useRouter();
-  const [savedItineraries, setSavedItineraries] = useState<SavedItinerary[]>([]);
+  const [savedItineraries, setSavedItineraries] = useState<SavedItinerary[]>(
+    [],
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,8 +57,10 @@ export default function SavedPage() {
       const user = JSON.parse(userStr);
       const email = user.email;
 
-      const response = await fetch(`/api/itineraries?email=${encodeURIComponent(email)}`);
-      
+      const response = await fetch(
+        `/api/itineraries?email=${encodeURIComponent(email)}`,
+      );
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || "Failed to fetch itineraries");
@@ -92,7 +95,7 @@ export default function SavedPage() {
         `/api/itineraries/${id}?email=${encodeURIComponent(email)}`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (!response.ok) {
@@ -116,7 +119,7 @@ export default function SavedPage() {
       travelStyle: itinerary.travelStyle,
       budgetLevel: itinerary.budgetLevel,
     };
-    
+
     // Save as last_itinerary and navigate to results page
     localStorage.setItem("last_itinerary", JSON.stringify(itineraryData));
     router.push("/results");
@@ -143,7 +146,8 @@ export default function SavedPage() {
   };
 
   const formatDate = (dateString: string | Date) => {
-    const date = typeof dateString === "string" ? new Date(dateString) : dateString;
+    const date =
+      typeof dateString === "string" ? new Date(dateString) : dateString;
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -203,7 +207,8 @@ export default function SavedPage() {
                 No saved itineraries yet
               </h3>
               <p className="mt-2 text-gray-600">
-                Start planning your trip and save your favorite itineraries here.
+                Start planning your trip and save your favorite itineraries
+                here.
               </p>
               <div className="mt-6">
                 <Button href="/generate" variant="primary">
@@ -301,7 +306,8 @@ export default function SavedPage() {
                           d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
-                      {itinerary.budgetLevel} • {formatCurrency(calculateTotalCost(itinerary))}
+                      {itinerary.budgetLevel} •{" "}
+                      {formatCurrency(calculateTotalCost(itinerary))}
                     </div>
                     <div className="flex items-center text-xs text-gray-500">
                       <svg
@@ -325,16 +331,9 @@ export default function SavedPage() {
                     <Button
                       onClick={() => handleView(itinerary)}
                       variant="primary"
-                      className="flex-1 text-sm"
+                      className="text-sm flex-1"
                     >
                       View Details
-                    </Button>
-                    <Button
-                      href="/generate"
-                      variant="secondary"
-                      className="text-sm"
-                    >
-                      Create New
                     </Button>
                   </div>
                 </div>
@@ -358,4 +357,3 @@ export default function SavedPage() {
     </div>
   );
 }
-
