@@ -41,18 +41,18 @@ export default function LoginPage() {
         // Store user data (token is stored in HttpOnly cookie automatically)
         localStorage.setItem(
           "aitp_user",
-          JSON.stringify({ name: data.user?.name, email: data.user?.email })
+          JSON.stringify({ name: data.user?.name, email: data.user?.email }),
         );
       }
 
       setMessage(
-        `Welcome back, ${data.user?.name || "traveler"}! Redirecting...`
+        `Welcome back, ${data.user?.name || "traveler"}! Redirecting...`,
       );
       setMessageType("success");
       setLoading(false);
 
       setTimeout(() => {
-        router.push("/");
+        window.location.href = "/";
       }, 600);
     } catch (error) {
       const errMsg =
