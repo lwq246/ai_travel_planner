@@ -102,7 +102,7 @@ export default function Navbar() {
       }
       setUser(null);
       setOpen(false);
-      router.push("/auth/login");
+      window.location.href = "/auth/login";
     }
   };
 
