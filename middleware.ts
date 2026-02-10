@@ -105,9 +105,8 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
 
   if (!token) {
-    // No token found
-    if (isProtectedApiRoute) {
       // For API routes, return 401 Unauthorized
+    if (isProtectedApiRoute) {
       return NextResponse.json(
         { error: "Unauthorized. Please log in." },
         { status: 401 }
@@ -116,8 +115,17 @@ export async function middleware(request: NextRequest) {
       // For page routes, redirect to login
       const loginUrl = new URL("/auth/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
-    }
+      
+      // --- MODIFY THIS PART ---
+      const response = NextResponse.redirect(loginUrl);
+      
+      // Add these headers to prevent the browser/Vercel from caching the redirect
+      response.headers.set('Cache-Control', 'no-store, max-age=0, must-revalidate');
+      response.headers.set('Pragma', 'no-cache');
+      response.headers.set('Expires', '0');
+      
+      return response;
+      }
   }
 
   // Verify token
@@ -134,8 +142,11 @@ export async function middleware(request: NextRequest) {
           new URL("/auth/login", request.url).toString() +
             `?redirect=${encodeURIComponent(pathname)}`
         );
-
-    // Clear invalid cookie
+  
+    // --- ADD HEADERS TO THIS RESPONSE TOO ---
+    response.headers.set('Cache-Control', 'no-store, max-age=0, must-revalidate');
+  
+    // Clear invalid cookie (keep your existing logic here)
     response.cookies.set(COOKIE_NAME, "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -143,7 +154,7 @@ export async function middleware(request: NextRequest) {
       maxAge: 0,
       path: "/",
     });
-
+  
     return response;
   }
 
